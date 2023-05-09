@@ -2,6 +2,8 @@ server:
   port: 9083
 
 spring:
+  application:
+    name: proxy
   cloud:
     gateway:
       discovery:
@@ -18,7 +20,16 @@ spring:
             - Path=/user/**
 eureka:
   client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka/
-    registerWithEureka: false
-    fetchRegistry: false
+    healthcheck:
+      enabled: true
+logging:
+  level:
+    org.springframework: debug
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - metrics
+          - prometheus

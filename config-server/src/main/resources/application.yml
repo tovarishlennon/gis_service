@@ -7,6 +7,3 @@ spring:
       server:
         git:
           uri: https://github.com/tovarishlennon/configurations.git
-          search-paths: config
-      label: main
-      allow-override: true
