@@ -1,9 +1,11 @@
-server:
-  port: 9088
-
 spring:
   application:
     name: auth-service
+
+logging:
+  level:
+    org.springframework: info
+    io.github.resilience4j: debug
 
 management:
   endpoints:

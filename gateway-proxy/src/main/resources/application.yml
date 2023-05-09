@@ -17,10 +17,8 @@ spring:
           predicates:
             - Path=/user/**
 eureka:
-  instance:
-    hostname: localhost
   client:
     service-url:
-      defaultZone: http://eureka-server:8761/eureka/
+      defaultZone: http://localhost:8761/eureka/
     registerWithEureka: false
     fetchRegistry: false
