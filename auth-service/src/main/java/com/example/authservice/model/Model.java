@@ -15,7 +15,7 @@ import java.io.Serializable;
 @Data
 @EntityListeners(AuditingEntityListener.class)
 public class Model extends BaseEntity implements Serializable {
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private Users userId;
 

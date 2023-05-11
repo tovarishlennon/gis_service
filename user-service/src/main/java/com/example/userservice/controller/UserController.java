@@ -1,22 +1,26 @@
 package com.example.userservice.controller;
 
+import com.example.userservice.dto.ResponseDto;
 import com.example.userservice.model.Model;
 import com.example.userservice.repository.ModelRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
 @Slf4j
 public class UserController {
 
-    private final ModelRepository modelRepository;
+    @Autowired
+    private ModelRepository modelRepository;
     private final RedisTemplate<String, String> redisTemplate;
 
     public UserController(ModelRepository modelRepository, RedisTemplate<String, String> redisTemplate) {
@@ -31,7 +35,7 @@ public class UserController {
     }
 
     @GetMapping("/info")
-    public ResponseEntity<Model> getUserEntities(@CookieValue(value = "token", required = false) String token) {
+    public ResponseEntity<List<ResponseDto>> getUserEntities(@CookieValue(value = "token", required = false) String token) {
         // Проверка наличия токена в куках
         if (token == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -44,8 +48,17 @@ public class UserController {
         }
 
         // Получение всех записей сущностей пользователя
-        Model entities = modelRepository.findByUserId(Long.parseLong(userId)).orElseThrow(() -> new RuntimeException("No user found!"));
+        Flux<Model> byUserId = modelRepository.findAllByUserIdAndId(Long.valueOf(userId));
 
-        return ResponseEntity.ok(entities);
+        List<ResponseDto> mainResponse = new ArrayList<>();
+
+        byUserId.subscribe(t -> {
+            ResponseDto responseDto = new ResponseDto();
+            responseDto.setName(t.getName());
+            responseDto.setUserId(t.getUserId().getId());
+            mainResponse.add(responseDto);
+        });
+
+        return ResponseEntity.ok(mainResponse);
     }
 }

@@ -9,6 +9,7 @@ spring:
       discovery:
         locator:
           enabled: true
+          lower-case-service-id: true
       routes:
         - id: auth-service
           uri: lb://auth-service
@@ -19,6 +20,9 @@ spring:
           predicates:
             - Path=/user/**
 eureka:
+  instance:
+    hostname: localhost
+    prefer-ip-address: true
   client:
     healthcheck:
       enabled: true
