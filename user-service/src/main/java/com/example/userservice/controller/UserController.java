@@ -3,7 +3,6 @@ package com.example.userservice.controller;
 import com.example.userservice.model.Model;
 import com.example.userservice.repository.ModelRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,13 +15,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/user")
 @Slf4j
 public class UserController {
-    @Autowired
-    private ModelRepository modelRepository;
+
+    private final ModelRepository modelRepository;
     private final RedisTemplate<String, String> redisTemplate;
 
-    public UserController(RedisTemplate<String, String> redisTemplate) {
-
+    public UserController(ModelRepository modelRepository, RedisTemplate<String, String> redisTemplate) {
+        this.modelRepository = modelRepository;
         this.redisTemplate = redisTemplate;
+    }
+
+    @GetMapping("/get")
+    public ResponseEntity<String> get() {
+        String newString = "some value to show";
+        return ResponseEntity.ok(newString);
     }
 
     @GetMapping("/info")
