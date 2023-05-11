@@ -1,4 +1,4 @@
-package com.example.authservice.model;
+package com.example.userservice.model;
 
 import lombok.Getter;
 import lombok.Setter;
